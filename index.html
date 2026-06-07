@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Benjamin Cruse | Robotics, Controls, and ML</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <a class="skip-link" href="#about">Skip to main content</a>
+
+  <section class="hero-section">
+    <div class="hero-pulse"></div>
+    <div class="hero-social-links" data-render="hero-social"></div>
+    <div class="hero-content">
+      <div class="hero-image-container">
+        <img class="hero-image" data-render="profile" alt="Benjamin Cruse profile" />
+      </div>
+      <h1 class="hero-name" data-render="name"></h1>
+      <p class="hero-subtitle" data-render="subtitle"></p>
+      <p class="hero-role-target" data-render="role-target"></p>
+      <div class="hero-actions" data-render="hero-actions" aria-label="Page quick links"></div>
+      <div class="skills-scroll-container">
+        <div class="skills-scroll" data-render="skills"></div>
+      </div>
+      <div class="scroll-indicator" aria-label="Scroll to main content">
+        <svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+          <line x1="12" x2="12" y1="5" y2="19"></line>
+          <polyline points="19 12 12 19 5 12"></polyline>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <div class="main-container">
+    <aside class="sidebar">
+      <div class="sidebar-content">
+        <nav class="sidebar-nav" data-render="sidebar-nav"></nav>
+        <div class="social-links" data-render="sidebar-social"></div>
+      </div>
+    </aside>
+
+    <main class="content">
+      <section class="content-section" id="about">
+        <h2 class="section-title">About</h2>
+        <div class="section-content" data-render="about"></div>
+      </section>
+
+      <div data-render="sections"></div>
+
+      <section class="content-section contact-section" id="contact">
+        <h2 class="section-title">Contact</h2>
+        <div class="section-content contact-grid clean-contact">
+          <div class="contact-copy">
+            <p data-render="contact-intro"></p>
+          </div>
+          <div class="contact-details" data-render="contact-details"></div>
+        </div>
+      </section>
+
+      <section class="content-section resume-section" id="resume">
+        <h2 class="section-title">Resume</h2>
+        <div class="section-content">
+          <div class="resume-preview-card" data-render="resume-preview">
+            <div class="resume-preview-header">
+              <h3>Resume</h3>
+              <a data-render="resume-link" href="assets/docs/Benjamin_Cruse_Resume.pdf" target="_blank" rel="noopener noreferrer">Open PDF</a>
+            </div>
+            <iframe class="resume-preview-frame" data-render="resume-frame" title="Benjamin Cruse resume" loading="lazy"></iframe>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="image-viewer" id="image-viewer" aria-hidden="true">
+    <div class="image-viewer-backdrop" data-close-viewer="true"></div>
+    <figure class="image-viewer-panel">
+      <button class="image-viewer-close" type="button" aria-label="Close expanded media">×</button>
+      <video aria-label="Expanded project video" controls id="image-viewer-video" playsinline preload="metadata" hidden></video>
+      <img alt="" id="image-viewer-img" hidden />
+      <figcaption id="image-viewer-caption"></figcaption>
+    </figure>
+  </div>
+
+  <script src="assets/data/portfolio-data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
