@@ -445,7 +445,8 @@ function openCard(card) {
     description.classList.add('active');
 
     window.requestAnimationFrame(() => {
-        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        const smallLayout = window.matchMedia('(max-width: 1024px)').matches;
+        card.scrollIntoView({ behavior: 'smooth', block: smallLayout ? 'start' : 'nearest' });
     });
 }
 
@@ -487,6 +488,9 @@ function cardStillVisible(card) {
 
 function autoCloseScrolledAwayCard() {
     scrollTicking = false;
+    // On touch-sized layouts, keep expanded cards open while the user scrolls.
+    // Long project descriptions were easy to auto-collapse before users reached the text.
+    if (window.matchMedia('(max-width: 1024px)').matches) return;
     if (activeCard && !cardStillVisible(activeCard)) {
         closeCard(activeCard);
     }
@@ -813,6 +817,28 @@ function setupFilters() {
     });
 }
 
+
+function setupSectionNavScrolling() {
+    document.querySelectorAll('.nav-link[href^="#"]').forEach(link => {
+        link.addEventListener('click', event => {
+            const hash = link.getAttribute('href') || '';
+            const id = decodeURIComponent(hash.replace(/^#/, ''));
+            const target = id ? document.getElementById(id) : null;
+            if (!target) return;
+
+            event.preventDefault();
+
+            const targetTop = target.getBoundingClientRect().top + (window.scrollY || window.pageYOffset || 0);
+            history.pushState(null, '', hash);
+            window.scrollTo({
+                top: Math.max(0, Math.round(targetTop)),
+                behavior: 'smooth'
+            });
+            updateActiveNav();
+        });
+    });
+}
+
 function setupSeamlessScroll() {
     const scrollContainer = document.querySelector('.skills-scroll');
     if (!scrollContainer) return;
@@ -860,6 +886,7 @@ window.addEventListener('resize', updateViewerLeft);
 
 document.addEventListener('DOMContentLoaded', () => {
     renderSite();
+    setupSectionNavScrolling();
     updateActiveNav();
     updateViewerLeft();
     setupDirectMediaTriggers();
@@ -887,3 +914,76 @@ document.addEventListener('keydown', event => {
         if (activeCard) closeCard(activeCard);
     }
 });
+
+/* Desktop sidebar follow behavior.
+   This intentionally uses a fixed inner panel instead of CSS sticky so the
+   sidebar keeps the original desktop behavior even when mobile overflow fixes
+   are present elsewhere in the stylesheet. */
+function setupDesktopSidebarFollow() {
+    const main = document.querySelector('.main-container');
+    const sidebar = document.querySelector('.sidebar');
+    const panel = document.querySelector('.sidebar-content');
+    if (!main || !sidebar || !panel) return;
+
+    const desktopQuery = window.matchMedia('(min-width: 1025px)');
+    let ticking = false;
+
+    function resetPanel() {
+        panel.classList.remove('sidebar-follow-fixed', 'sidebar-follow-bottom');
+        panel.style.removeProperty('--sidebar-follow-left');
+        panel.style.removeProperty('--sidebar-follow-width');
+    }
+
+    function updateSidebarFollow() {
+        ticking = false;
+
+        if (!desktopQuery.matches) {
+            resetPanel();
+            return;
+        }
+
+        const scrollY = window.scrollY || window.pageYOffset || 0;
+        const mainRect = main.getBoundingClientRect();
+        const sidebarRect = sidebar.getBoundingClientRect();
+        const mainTop = mainRect.top + scrollY;
+        const mainBottom = mainTop + main.offsetHeight;
+        const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+        const pinEnd = mainBottom - viewportHeight;
+
+        panel.style.setProperty('--sidebar-follow-left', `${sidebarRect.left}px`);
+        panel.style.setProperty('--sidebar-follow-width', `${sidebarRect.width}px`);
+
+        panel.classList.remove('sidebar-follow-fixed', 'sidebar-follow-bottom');
+
+        if (scrollY < mainTop) {
+            return;
+        }
+
+        if (scrollY >= pinEnd) {
+            panel.classList.add('sidebar-follow-bottom');
+            return;
+        }
+
+        panel.classList.add('sidebar-follow-fixed');
+    }
+
+    function requestUpdate() {
+        if (!ticking) {
+            window.requestAnimationFrame(updateSidebarFollow);
+            ticking = true;
+        }
+    }
+
+    window.addEventListener('scroll', requestUpdate, { passive: true });
+    window.addEventListener('resize', requestUpdate);
+    desktopQuery.addEventListener?.('change', requestUpdate);
+    window.addEventListener('load', requestUpdate);
+    requestUpdate();
+    setTimeout(requestUpdate, 250);
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupDesktopSidebarFollow);
+} else {
+    setupDesktopSidebarFollow();
+}

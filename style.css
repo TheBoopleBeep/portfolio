@@ -2303,3 +2303,512 @@ body.viewer-open {
 .resume-section .resume-preview-frame {
     height: min(86vh, 980px);
 }
+
+/* ===== MOBILE / TABLET RESPONSIVE STABILITY PATCH =====
+   Keeps the portfolio fully usable on narrow screens and prevents
+   horizontal overflow from late desktop layout overrides.
+
+   Important: do NOT set overflow-x: hidden on the root html element on
+   desktop. Doing so creates a scrolling/overflow ancestor that prevents
+   the desktop .sidebar { position: sticky; } behavior from working in
+   Chromium-based browsers. The body-level overflow rule below preserves
+   the horizontal overflow fix while keeping the original sticky sidebar
+   behavior after the hero/landing section. */
+body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+html {
+    width: 100%;
+    max-width: none;
+    overflow-x: visible;
+}
+
+img,
+video,
+iframe,
+svg {
+    max-width: 100%;
+}
+
+.main-container,
+.sidebar,
+.content,
+.content-section,
+.section-content,
+.projects-grid,
+.project-card,
+.project-content-wrapper,
+.project-media-column,
+.project-info,
+.project-title-group,
+.project-description,
+.media-gallery,
+.gallery-item,
+.contact-grid,
+.contact-copy,
+.contact-details,
+.resume-preview-card {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.project-summary,
+.project-description,
+.project-description p,
+.project-title,
+.meta-item,
+.meta-item dd,
+.entry-link,
+.tag,
+.contact-detail span,
+.contact-detail a,
+.resume-preview-header,
+.hero-role-target,
+.hero-subtitle {
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
+
+@media (max-width: 1024px) {
+    html,
+    body {
+        overflow-x: hidden !important;
+    }
+
+    .hero-section {
+        min-height: 100svh;
+        overflow: hidden;
+        padding: 80px 18px 44px;
+    }
+
+    .hero-section::before {
+        width: 160%;
+        height: 160%;
+        left: -30%;
+        top: -30%;
+    }
+
+    .hero-content {
+        width: 100%;
+        max-width: 720px;
+        padding: 0 4px;
+    }
+
+    .hero-name {
+        font-size: clamp(2.25rem, 11vw, 3.25rem) !important;
+        line-height: 1.08;
+        letter-spacing: 0.03em;
+    }
+
+    .hero-subtitle,
+    .hero-role-target {
+        max-width: 92vw;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .skills-scroll-container {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .main-container {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow-x: hidden !important;
+    }
+
+    .sidebar {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        height: auto !important;
+        position: relative !important;
+        top: auto !important;
+        padding: 28px clamp(16px, 5vw, 34px) 8px !important;
+    }
+
+    .sidebar-content {
+        height: auto !important;
+        padding-top: 0 !important;
+    }
+
+    .sidebar-nav {
+        display: none !important;
+    }
+
+    .social-links {
+        justify-content: center;
+        margin: 0 auto 12px;
+    }
+
+    .content {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 24px clamp(14px, 4.5vw, 32px) 56px !important;
+        overflow-x: hidden !important;
+    }
+
+    .section-title {
+        position: relative !important;
+        top: auto !important;
+        background: transparent !important;
+        backdrop-filter: none !important;
+        box-shadow: none !important;
+        z-index: 1 !important;
+    }
+
+    .overview-grid,
+    .case-study-highlights,
+    .contact-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .filter-bar {
+        max-width: 100%;
+        overflow: visible;
+    }
+
+    .project-card,
+    .project-card.expanded {
+        width: 100% !important;
+        max-width: 100% !important;
+        transform: none !important;
+        overflow: hidden !important;
+    }
+
+    .project-content-wrapper,
+    .project-card:not(.expanded) .project-content-wrapper,
+    .project-card.expanded .project-content-wrapper {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        gap: 16px !important;
+        padding: clamp(13px, 4vw, 20px) !important;
+    }
+
+    .project-card.expanded .project-content-wrapper {
+        background: linear-gradient(135deg, rgba(67, 28, 28, 0.97), rgba(39, 18, 18, 0.98));
+    }
+
+    .project-media-column,
+    .project-info {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .project-card.expanded .project-info {
+        order: 1;
+    }
+
+    .project-card.expanded .project-media-column {
+        order: 2;
+    }
+
+    .project-thumbnail,
+    .project-card:not(.expanded) .project-thumbnail,
+    .project-card.expanded .project-thumbnail {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        min-height: 0 !important;
+        aspect-ratio: 16 / 9;
+    }
+
+    .project-card.expanded .project-thumbnail {
+        display: none !important;
+    }
+
+    .media-gallery,
+    .project-card.expanded .media-gallery {
+        width: 100% !important;
+        max-width: 100% !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 12px !important;
+    }
+
+    .gallery-item,
+    .project-card.expanded .gallery-item {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        aspect-ratio: 16 / 9;
+    }
+
+    .project-description,
+    .project-description.active,
+    .project-card.expanded .project-description,
+    .project-card.expanded .project-description.active {
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    .project-card.expanded .project-description p,
+    .project-card.expanded .project-summary {
+        max-width: 100% !important;
+    }
+
+    .project-meta,
+    .entry-links,
+    .tags {
+        max-width: 100%;
+    }
+
+    .image-viewer {
+        padding: 12px !important;
+    }
+
+    .image-viewer-panel {
+        width: 100% !important;
+        height: calc(100svh - 24px) !important;
+        max-height: calc(100svh - 24px) !important;
+    }
+
+    .image-viewer-panel img,
+    .image-viewer-panel video {
+        max-width: 100% !important;
+        max-height: calc(100svh - 96px) !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .hero-social-links {
+        top: 18px !important;
+        left: 50% !important;
+        transform: translateX(-50%);
+        gap: 12px !important;
+    }
+
+    .hero-image {
+        width: clamp(142px, 42vw, 180px) !important;
+        height: clamp(142px, 42vw, 180px) !important;
+    }
+
+    .hero-image-container {
+        margin-bottom: 28px;
+    }
+
+    .hero-actions,
+    .contact-actions {
+        width: 100% !important;
+        max-width: 360px;
+    }
+
+    .hero-action,
+    .contact-action {
+        width: 100%;
+    }
+
+    .content {
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+    }
+
+    .content-section {
+        margin-bottom: 50px !important;
+    }
+
+    .project-card:not(.expanded) .project-summary,
+    .project-card:not(.expanded) .project-outcome {
+        -webkit-line-clamp: unset !important;
+        display: block !important;
+        overflow: visible !important;
+    }
+
+    .project-header {
+        gap: 12px;
+    }
+
+    .expand-icon {
+        flex: 0 0 auto;
+    }
+
+    .overview-item,
+    .contact-copy,
+    .contact-details,
+    .resume-preview-card {
+        padding: 14px !important;
+    }
+
+    .contact-detail span,
+    .contact-detail a {
+        font-size: 0.86rem;
+    }
+
+    .resume-preview-header {
+        display: grid !important;
+        grid-template-columns: 1fr;
+        align-items: start !important;
+        gap: 8px !important;
+    }
+
+    .resume-preview-frame {
+        display: none !important;
+    }
+
+    .resume-preview-card::after {
+        content: "Open the PDF for the best mobile resume view.";
+        display: block;
+        margin-top: 10px;
+        color: #c4a3a3;
+        font-size: 0.86rem;
+        line-height: 1.45;
+    }
+}
+
+/* ===== MOBILE POLISH: metadata labels + resume prompt =====
+   Prevent short labels like "Tools" from breaking across lines while
+   still letting long metadata values wrap within the card width. */
+.project-meta,
+.meta-item,
+.meta-item dt,
+.meta-item dd {
+    overflow-wrap: normal;
+    word-break: normal;
+}
+
+.meta-item {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.meta-item dt {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    word-break: keep-all;
+    overflow-wrap: normal;
+}
+
+.meta-item dd {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+    .project-meta {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 8px;
+        width: 100%;
+    }
+
+    .meta-item {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: start;
+        column-gap: 7px;
+        row-gap: 2px;
+        width: 100%;
+        max-width: 100%;
+        border-radius: 14px;
+    }
+
+    .meta-item dt {
+        white-space: nowrap;
+    }
+
+    .resume-preview-card::after {
+        content: "Open PDF" !important;
+    }
+}
+
+/* ===== DESKTOP SIDEBAR FOLLOW RESTORE =====
+   Keep the mobile layout fixes, but make desktop sidebar behavior explicit
+   instead of relying on position: sticky. The aside remains in the flex layout
+   as a placeholder; only the inner sidebar panel becomes fixed after the hero
+   scrolls away. */
+@media (min-width: 1025px) {
+    .main-container {
+        display: flex !important;
+        align-items: stretch !important;
+        overflow: visible !important;
+    }
+
+    .sidebar {
+        position: relative !important;
+        top: auto !important;
+        align-self: stretch !important;
+        height: auto !important;
+        min-height: 100vh !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        flex: 0 0 32% !important;
+        width: 32% !important;
+        max-width: 480px !important;
+        min-width: 320px !important;
+        z-index: 100 !important;
+    }
+
+    .sidebar-content {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        bottom: auto !important;
+        width: 100% !important;
+        height: 100vh !important;
+        min-height: 100vh !important;
+        padding: 96px 40px !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        overflow: visible !important;
+        z-index: 100 !important;
+    }
+
+    .sidebar-content.sidebar-follow-fixed {
+        position: fixed !important;
+        top: 0 !important;
+        left: var(--sidebar-follow-left, 0px) !important;
+        width: var(--sidebar-follow-width, 320px) !important;
+    }
+
+    .sidebar-content.sidebar-follow-bottom {
+        position: absolute !important;
+        top: auto !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+    }
+}
+
+/* ===== PATCH: mobile collapsed cards + precise section jumps =====
+   The responsive overflow patch previously made descriptions visible in all
+   mobile cards. Keep descriptions expanded only after the card has the
+   .expanded state, and make hash/nav jumps place the section banner at the
+   top of the viewport. */
+.content-section {
+    scroll-margin-top: 0 !important;
+}
+
+@media (max-width: 1024px) {
+    .project-card:not(.expanded) .project-description,
+    .project-card:not(.expanded) .project-description.active {
+        max-height: 0 !important;
+        overflow: hidden !important;
+        margin-top: 0 !important;
+    }
+
+    .project-card:not(.expanded) .project-description p {
+        opacity: 0 !important;
+        transform: translateY(-4px) !important;
+    }
+
+    .project-card.expanded .project-description.active {
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    .project-card.expanded .project-description.active p {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}
