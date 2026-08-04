@@ -117,7 +117,7 @@ const ENTRY_LIBRARY = {
       "Tools": "Python, hierarchical searches, metaheuristics",
       "Timeline": "Aug 2025 – Aug 2026",
       "Team": "MS Research",
-      "Status": "Master’s thesis in progress; defense planned for August"
+      "Status": "Master’s capstone in progress; presentation planned for August"
     },
     "descriptions": [
       {
@@ -130,7 +130,7 @@ const ENTRY_LIBRARY = {
       },
       {
             "label": "Outcome",
-            "text": "This is ongoing master’s thesis work planned for defense in August. The central hypothesis is that a well-designed hierarchy can steer assignments toward strong machines while reducing the size of each search. Poorly constructed hierarchies can add overhead, but hierarchies that group tasks sharing similar machine pools can reduce search size while keeping good candidates nearby."
+            "text": "This is ongoing master’s capstone work planned to be presented August 7th. The central hypothesis is that a well-designed hierarchy can steer assignments toward strong machines while reducing the size of each search. Poorly constructed hierarchies can add overhead, but hierarchies that group tasks sharing similar machine pools can reduce search size while keeping good candidates nearby."
       }
 ],
     "tags": [
