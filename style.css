@@ -1940,6 +1940,10 @@ button.gallery-item.image-trigger img {
     video[autoplay] {
         animation: none !important;
     }
+
+    video[data-preview-video] {
+        animation: none !important;
+    }
 }
 
 
@@ -2382,6 +2386,8 @@ svg {
         min-height: 100svh;
         overflow: hidden;
         padding: 80px 18px 44px;
+        animation: none;
+        background-size: 100% 100%;
     }
 
     .hero-section::before {
@@ -2389,6 +2395,17 @@ svg {
         height: 160%;
         left: -30%;
         top: -30%;
+        animation: none;
+    }
+
+    .hero-section > .hero-pulse,
+    .scroll-indicator,
+    .skills-scroll {
+        animation: none;
+    }
+
+    .skills-scroll {
+        will-change: auto;
     }
 
     .hero-content {
