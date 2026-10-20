@@ -126,6 +126,25 @@ Media paths should be relative to `index.html`, for example:
 
 Then place the actual file in `assets/images/`, `assets/videos/`, or `assets/docs/`.
 
+## YouTube presentations
+
+Add a YouTube player to an entry's `media` list using its video ID:
+
+```js
+{
+  type: "youtube",
+  videoId: "NvRt0rdWVfA",
+  caption: "Master's capstone presentation (26 min)"
+}
+```
+
+The player appears in the expanded entry's media column, loads when the entry
+opens, and unloads when it closes. Playback starts with YouTube's Play control.
+Keep an external video link in the entry's `links` list as an alternative;
+video links remain visible when the entry is collapsed.
+Preview embedded playback through an HTTP server or the published site, since
+YouTube requires a referring website for embedded playback.
+
 ## GitHub Pages notes
 
 - Keep paths relative; do not start local asset paths with `/`.
@@ -134,6 +153,10 @@ Then place the actual file in `assets/images/`, `assets/videos/`, or `assets/doc
 
 
 ## Updating education/status
+
+Use `assets/docs/Benjamin_Cruse_Resume.pdf` as the source for degree dates,
+project timelines, publication status, and reported results. Keep project media
+and additional technical details unless the resume contradicts them.
 
 Edit `profile.subtitle`, `profile.education`, `profile.sidebarNote`, `profile.contactIntro`, and the `about.paragraph` field in `assets/data/portfolio-data.js`. The contact section renders `profile.education` automatically.
 

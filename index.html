@@ -4,6 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Benjamin Cruse | Robotics, Controls, and ML</title>
+  <script>
+    document.documentElement.classList.add('is-loading');
+    // Reveal the page even if its application scripts fail to load.
+    window.setTimeout(() => document.documentElement.classList.replace('is-loading', 'is-ready'), 4000);
+  </script>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -14,7 +19,7 @@
     <div class="hero-social-links" data-render="hero-social"></div>
     <div class="hero-content">
       <div class="hero-image-container">
-        <img class="hero-image" data-render="profile" alt="Benjamin Cruse profile" />
+        <img class="hero-image" data-render="profile" src="assets/images/profile.jpg" width="1800" height="1762" fetchpriority="high" decoding="async" alt="Benjamin Cruse profile" />
       </div>
       <h1 class="hero-name" data-render="name"></h1>
       <p class="hero-subtitle" data-render="subtitle"></p>

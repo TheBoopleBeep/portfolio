@@ -243,7 +243,59 @@ function renderFeaturedMedia(media) {
     return thumbnail;
 }
 
+// @component
+// id: portfolio.media.renderYouTubeMedia
+// purpose: Render a validated lazy YouTube embed that activates with its project card.
+// inputs: media: gallery media object with videoId and caption
+// outputs: figure Element or inert empty Text node
+// last_modified: 2026-10-20
+// verified_by: model:gpt-5.6-terra/high
+// verified_at: 2026-10-20
+// verification_level: REVIEWED
+// confidence: PLAUSIBLE
+// verification_evidence: Node syntax/static lifecycle review; inspected Chromium desktop/mobile/narrow player artifacts.
+// @end
+function renderYouTubeMedia(media) {
+    const videoId = media?.videoId;
+    if (typeof videoId !== 'string' || !/^[A-Za-z0-9_-]{11}$/.test(videoId)) {
+        return document.createTextNode('');
+    }
+
+    const caption = media.caption || 'YouTube video';
+    const figure = createElement('figure', 'youtube-media');
+    const iframe = createElement('iframe', 'youtube-embed');
+    setAttributes(iframe, {
+        'data-embed-src': `https://www.youtube-nocookie.com/embed/${videoId}?playsinline=1&rel=0`,
+        title: caption,
+        loading: 'lazy',
+        allowfullscreen: true,
+        allow: 'accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen',
+        referrerpolicy: 'strict-origin-when-cross-origin'
+    });
+
+    figure.addEventListener('click', event => event.stopPropagation());
+    figure.addEventListener('keydown', event => {
+        if (event.key === 'Enter' || event.key === ' ') event.stopPropagation();
+    });
+    figure.append(iframe, createElement('figcaption', null, caption));
+    return figure;
+}
+
+// @component
+// id: portfolio.media.renderGalleryItem
+// purpose: Render one project gallery media item with the appropriate interaction contract.
+// inputs: media: gallery media object
+// outputs: gallery media Node
+// last_modified: 2026-10-20
+// verified_by: model:gpt-5.6-terra/high
+// verified_at: 2026-10-20
+// verification_level: REVIEWED
+// confidence: PLAUSIBLE
+// verification_evidence: Node syntax/static lifecycle review; inspected Chromium desktop/mobile/narrow player artifacts.
+// @end
 function renderGalleryItem(media) {
+    if (media.type === 'youtube') return renderYouTubeMedia(media);
+
     if (media.type === 'video') {
         const item = createElement('div', 'gallery-item media-video');
         setAttributes(item, {
@@ -423,6 +475,18 @@ function clearHashForClosedCard(card) {
     history.replaceState(null, '', nextHash);
 }
 
+// @component
+// id: portfolio.cards.openCard
+// purpose: Expand one project card and activate its deferred YouTube embeds.
+// inputs: card: project card Element
+// outputs: none; updates card state and iframe src attributes
+// last_modified: 2026-10-20
+// verified_by: model:gpt-5.6-terra/high
+// verified_at: 2026-10-20
+// verification_level: REVIEWED
+// confidence: PLAUSIBLE
+// verification_evidence: Node syntax/static lifecycle review; inspected Chromium desktop/mobile/narrow player artifacts.
+// @end
 function openCard(card) {
     if (!card) return;
 
@@ -441,6 +505,10 @@ function openCard(card) {
     updateHashForOpenCard(card);
     header.classList.add('active');
     description.classList.add('active');
+    card.querySelectorAll('iframe.youtube-embed').forEach(iframe => {
+        const embedSrc = iframe.dataset.embedSrc;
+        if (embedSrc && !iframe.getAttribute('src')) iframe.setAttribute('src', embedSrc);
+    });
 
     window.requestAnimationFrame(() => {
         const smallLayout = window.matchMedia('(max-width: 1024px)').matches;
@@ -448,6 +516,18 @@ function openCard(card) {
     });
 }
 
+// @component
+// id: portfolio.cards.closeCard
+// purpose: Collapse one project card and unload its YouTube embeds.
+// inputs: card: project card Element
+// outputs: none; updates card state and removes iframe src attributes
+// last_modified: 2026-10-20
+// verified_by: model:gpt-5.6-terra/high
+// verified_at: 2026-10-20
+// verification_level: REVIEWED
+// confidence: PLAUSIBLE
+// verification_evidence: Node syntax/static lifecycle review; inspected Chromium desktop/mobile/narrow player artifacts.
+// @end
 function closeCard(card) {
     if (!card) return;
 
@@ -460,6 +540,7 @@ function closeCard(card) {
     if (description) description.classList.remove('active');
     card.style.removeProperty('--expanded-shift');
     card.style.removeProperty('--expanded-width');
+    card.querySelectorAll('iframe.youtube-embed').forEach(iframe => iframe.removeAttribute('src'));
     clearHashForClosedCard(card);
 
     if (activeCard === card) {
@@ -728,6 +809,18 @@ function setupDirectMediaTriggers() {
     }, true);
 }
 
+// @component
+// id: portfolio.cards.setupCards
+// purpose: Bind card expansion while preserving native controls and media interactions.
+// inputs: rendered project cards in document
+// outputs: click and keyboard event handlers on each card
+// last_modified: 2026-10-20
+// verified_by: model:gpt-5.6-terra/high
+// verified_at: 2026-10-20
+// verification_level: REVIEWED
+// confidence: PLAUSIBLE
+// verification_evidence: Node syntax/static lifecycle review; inspected Chromium desktop/mobile/narrow player artifacts.
+// @end
 function setupCards() {
     document.querySelectorAll('.project-card').forEach(card => {
         const title = card.querySelector('.project-title')?.textContent?.trim();
@@ -754,6 +847,7 @@ function setupCards() {
 
         card.addEventListener('keydown', event => {
             if (event.key !== 'Enter' && event.key !== ' ') return;
+            if (event.target.closest('a, button, input, textarea, select, iframe')) return;
 
             const mediaTrigger = getMediaTrigger(event.target, card);
             if (card.classList.contains('expanded') && mediaTrigger) {
@@ -957,28 +1051,77 @@ function setupSectionNavScrolling() {
     });
 }
 
+// @component
+// id: portfolio.skills.setupSeamlessScroll
+// purpose: Build the duplicated skill ticker and gate its compositor animation by visibility and motion state.
+// inputs: document skill ticker elements, viewport visibility, document visibility, and responsive motion preferences
+// outputs: grouped skill ticker DOM, width-based --scroll-duration, and .is-running playback state
+// dependencies: shuffleArray, IntersectionObserver, ResizeObserver, matchMedia, document.fonts
+// last_modified: 2026-10-20
+// verified_by: model:gpt-5.6-terra/high
+// verified_at: 2026-10-20
+// verification_level: SYSTEM_TESTED
+// confidence: HIGH_CONFIDENCE
+// verification_evidence: node --check, git diff --check, and bounded Node VM assertions for geometry/gating/fallbacks/guards; Chromium E2E confirms 2x61 labels, 9590.546875px group and exact 2x track, 45px/s, no reset jump in +/-1ms period samples, hidden/offscreen pause with phase resume, intrinsic resize, mobile/reduced layouts, and observer fallback. Headless-only 121-frame sample: p95 16.8ms, none >25ms.
+// @end
 function setupSeamlessScroll() {
     const scrollContainer = document.querySelector('.skills-scroll');
-    if (!scrollContainer) return;
+    if (!scrollContainer || scrollContainer.querySelector('.skills-scroll-group')) return;
 
     const originalItems = Array.from(scrollContainer.querySelectorAll('.skill-item'));
+    if (!originalItems.length) return;
+
     shuffleArray(originalItems);
-    scrollContainer.innerHTML = '';
-    originalItems.forEach(item => scrollContainer.appendChild(item));
 
-    const scrollContent = scrollContainer.innerHTML;
-    scrollContainer.innerHTML = scrollContent + scrollContent + scrollContent;
+    const group = document.createElement('div');
+    group.className = 'skills-scroll-group';
+    originalItems.forEach(item => group.appendChild(item));
 
-    const items = scrollContainer.querySelectorAll('.skill-item');
-    let singleSetWidth = 0;
-    const itemCount = items.length / 3;
+    const clone = group.cloneNode(true);
+    clone.setAttribute('aria-hidden', 'true');
+    scrollContainer.replaceChildren(group, clone);
 
-    for (let i = 0; i < itemCount; i++) {
-        singleSetWidth += items[i].offsetWidth;
-        if (i < itemCount - 1) singleSetWidth += 30;
+    const updateDuration = () => {
+        const width = group.getBoundingClientRect().width;
+        scrollContainer.style.setProperty('--scroll-duration', `${width / 45}s`);
+    };
+
+    updateDuration();
+    if (typeof ResizeObserver === 'function') {
+        new ResizeObserver(updateDuration).observe(group);
+    } else {
+        window.addEventListener('resize', updateDuration);
+        const fontsReady = document.fonts?.ready;
+        if (fontsReady && typeof fontsReady.then === 'function') {
+            fontsReady.then(updateDuration, () => {});
+        }
     }
 
-    scrollContainer.style.setProperty('--scroll-width', `${singleSetWidth}px`);
+    const desktopQuery = window.matchMedia('(min-width: 1025px)');
+    const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const visibilityTarget = scrollContainer.closest('.skills-scroll-container') || scrollContainer;
+    let isIntersecting = typeof IntersectionObserver !== 'function';
+
+    const updateRunning = () => {
+        const shouldRun = isIntersecting
+            && !document.hidden
+            && desktopQuery.matches
+            && !reducedMotionQuery.matches;
+        scrollContainer.classList.toggle('is-running', shouldRun);
+    };
+
+    scrollContainer.classList.remove('is-running');
+    if (typeof IntersectionObserver === 'function') {
+        new IntersectionObserver(entries => {
+            isIntersecting = Boolean(entries[0]?.isIntersecting);
+            updateRunning();
+        }).observe(visibilityTarget);
+    }
+
+    document.addEventListener('visibilitychange', updateRunning);
+    desktopQuery.addEventListener?.('change', updateRunning);
+    reducedMotionQuery.addEventListener?.('change', updateRunning);
+    updateRunning();
 }
 
 function shuffleArray(items) {
@@ -1002,27 +1145,81 @@ window.addEventListener('hashchange', openEntryFromHash);
 window.addEventListener('scroll', handleScroll, { passive: true });
 window.addEventListener('resize', updateViewerLeft);
 
-document.addEventListener('DOMContentLoaded', () => {
-    renderSite();
-    setupSectionNavScrolling();
-    updateActiveNav();
-    updateViewerLeft();
-    setupDirectMediaTriggers();
-    setupCards();
-    setupViewer();
-    setupFilters();
-    setupSeamlessScroll();
-    setupPreviewVideos();
-    openEntryFromHash();
+// @component
+// id: portfolio.startup.finishPageEntrance
+// purpose: Reveal the page after reduced-motion checks or bounded hero image readiness.
+// inputs: document root, motion preference, and hero image state
+// outputs: root class transition from is-loading to is-ready and temporary hero decode state
+// last_modified: 2026-10-20
+// verified_by: model:gpt-5.6-terra/high
+// verified_at: 2026-10-20
+// verification_level: UNIT_TESTED
+// confidence: LIKELY_CORRECT
+// verification_evidence: Node syntax/static checks and VM assertions for resolved, rejected, slow, absent, and reduced-motion image states; verifies 800ms reveal and decode-state cleanup.
+// @end
+async function finishPageEntrance() {
+    const root = document.documentElement;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const heroImage = document.querySelector('.hero-image');
 
-    const scrollIndicator = document.querySelector('.scroll-indicator');
-    if (scrollIndicator) {
-        scrollIndicator.addEventListener('click', () => {
-            const mainContainer = document.querySelector('.main-container');
-            if (mainContainer) mainContainer.scrollIntoView({ behavior: 'smooth' });
+    if (!reduceMotion && heroImage && typeof heroImage.decode === 'function') {
+        const imageSurface = heroImage.closest('.hero-image-container') || heroImage;
+        imageSurface.classList.add('is-decoding');
+        const decodePromise = Promise.resolve()
+            .then(() => heroImage.decode())
+            .catch(() => {})
+            .finally(() => imageSurface.classList.remove('is-decoding'));
+        await Promise.race([
+            decodePromise,
+            new Promise(resolve => setTimeout(resolve, 800))
+        ]);
+    }
+
+    root.classList.replace('is-loading', 'is-ready');
+}
+
+// @component
+// id: portfolio.startup.initializeSite
+// purpose: Render site content and bind the existing page interaction handlers in order.
+// inputs: DOMContentLoaded document and portfolio data on window
+// outputs: rendered site and bound page interaction handlers
+// last_modified: 2026-10-20
+// verified_by: model:gpt-5.6-terra/high
+// verified_at: 2026-10-20
+// verification_level: UNIT_TESTED
+// confidence: LIKELY_CORRECT
+// verification_evidence: Node syntax/static checks and VM assertions for preserved setup order, initial-hash instant card positioning, no-card behavior, initialization exception finally reveal scheduling, and rejected-entrance fallback reveal.
+// @end
+function initializeSite() {
+    try {
+        renderSite();
+        setupSectionNavScrolling();
+        updateActiveNav();
+        updateViewerLeft();
+        setupDirectMediaTriggers();
+        setupCards();
+        setupViewer();
+        setupFilters();
+        setupSeamlessScroll();
+        setupPreviewVideos();
+        openEntryFromHash();
+        if (activeCard) activeCard.scrollIntoView({ behavior: 'instant', block: 'start' });
+
+        const scrollIndicator = document.querySelector('.scroll-indicator');
+        if (scrollIndicator) {
+            scrollIndicator.addEventListener('click', () => {
+                const mainContainer = document.querySelector('.main-container');
+                if (mainContainer) mainContainer.scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+    } finally {
+        void finishPageEntrance().catch(() => {
+            document.documentElement.classList.replace('is-loading', 'is-ready');
         });
     }
-});
+}
+
+document.addEventListener('DOMContentLoaded', initializeSite);
 
 document.addEventListener('keydown', event => {
     if (event.key === 'Escape') {

@@ -21,10 +21,10 @@ const ENTRY_LIBRARY = {
     ],
     "meta": {
       "Role": "Researcher / Developer",
-      "Tools": "Python, ROS 2, LTL, A*, weighted automata, LLMs",
-      "Timeline": "Aug 2025 – Sept 2026",
+      "Tools": "Python, ROS 2, LTL, A*, weighted automata, LLMs, AI2-THOR",
+      "Timeline": "Aug 2025 – Oct 2026",
       "Team": "3-person MQP / research team",
-      "Status": "preparing to submit to ICRA"
+      "Status": "Preparing submission to IEEE Robotics and Automation Letters (RA-L)"
     },
     "descriptions": [
       {
@@ -33,11 +33,11 @@ const ENTRY_LIBRARY = {
       },
       {
             "label": "Technical Approach",
-            "text": "Think Again preserves the formal planning layer while adding LLM-informed contextual risk analysis. The LLM receives information about the robot, environment, and mission parameters, then evaluates how executing an could go wrong. Those predictions are scored and applied as weights over the planning representation, allowing state-aware A* to search for paths that satisfy the LTL specification while avoiding likely emergent hazards."
+            "text": "Think Again preserves the formal planning layer while adding LLM-informed contextual risk analysis. The LLM receives information about the robot, environment, and mission parameters, then assesses the risks of executing actions in that environment. Those predictions are scored and applied as weights over the planning representation, allowing state-aware A* to search for paths that satisfy the LTL specification while avoiding likely emergent hazards. The framework was also integrated into AI2-THOR to demonstrate more abstract task-planning capabilities."
       },
       {
             "label": "Outcome",
-            "text": "The planner showed capabilities to account for hazards that were neither modeled in the automaton nor directly specified to the LLM. Across sveral scenarios, Think Again was able to predict and avoid several hazards using only information about an environment and the task being performed."
+            "text": "The planner was evaluated against baseline and LLM-based safety planners on simulated tasks and a Hello Robot Stretch 3. Across the evaluated scenarios, Think Again accounted for hazards that were neither modeled in the automaton nor directly specified to the LLM, using information about the environment and the task while preserving the LTL task requirements."
       }
 ],
     "tags": [
@@ -45,6 +45,7 @@ const ENTRY_LIBRARY = {
       "LLMs",
       "ROS 2",
       "A*",
+      "AI2-THOR",
       "Robot Safety"
     ],
     "featuredMedia": {
@@ -106,7 +107,7 @@ const ENTRY_LIBRARY = {
     "id": "mastah",
     "type": "Research",
     "title": "MASTAH: Minimum Auction Spanning Task Assignment Hierarchy",
-    "summary": "FJSP scheduling metaheuristic that uses a hierarchy of simulated decision nodes and local auctions to steer task-machine assignments without searching the full combinatorial space.",
+    "summary": "Decentralized scheduling metaheuristic for the Flexible Job Shop Problem that uses local subtree searches and fitness auctions to assign tasks across heterogeneous machines.",
     "topics": [
       "multi-agent",
       "task-planning",
@@ -117,7 +118,7 @@ const ENTRY_LIBRARY = {
       "Tools": "Python, hierarchical searches, metaheuristics",
       "Timeline": "Aug 2025 – Aug 2026",
       "Team": "MS Research",
-      "Status": "Master’s capstone in progress; presentation planned for August"
+      "Status": "Completed master’s capstone; presented August 7, 2026"
     },
     "descriptions": [
       {
@@ -126,11 +127,11 @@ const ENTRY_LIBRARY = {
       },
       {
             "label": "Technical Approach",
-            "text": "MASTAH narrows each assignment search to candidate machines that are likely to fit the current task. It creates a hierarchy of simulated decision nodes with task and agent ownership inspired by command hierarchies. At each step, an assignment node searches within its subtree; if several machines are available, fitness and transition-expense heuristics score each candidate. If no viable machine is available locally, the request escalates to a managing node and expands the search over a larger subtree."
+            "text": "MASTAH organizes task assignment through an artificial hierarchy inspired by human organizations, with each decision node maintaining only a local view of the system. An assignment request first searches the node’s local subtree, using fitness auctions and transition-expense heuristics to select a suitable machine. If no viable machine is available locally, the request escalates to a managing node and expands the search over a larger subtree. This decentralized approach limits the search required for each assignment."
       },
       {
             "label": "Outcome",
-            "text": "This is ongoing master’s capstone work planned to be presented August 7th. The central hypothesis is that a well-designed hierarchy can steer assignments toward strong machines while reducing the size of each search. Poorly constructed hierarchies can add overhead, but hierarchies that group tasks sharing similar machine pools can reduce search size while keeping good candidates nearby."
+            "text": "Completed and presented as my master’s capstone in August 2026. In the evaluated scenarios, MASTAH produced schedules with shorter makespans than greedy heuristics and ran faster than Tabu and MILP schedulers. Hierarchy design controls the tradeoff between local search size and assignment quality."
       }
 ],
     "tags": [
@@ -150,6 +151,11 @@ const ENTRY_LIBRARY = {
       "alt": "MASTAH scheduling visualization using a location and capability based hierarchy"
     },
     "media": [
+      {
+        "type": "youtube",
+        "videoId": "NvRt0rdWVfA",
+        "caption": "Master’s capstone presentation (26 min)"
+      },
       {
         "type": "video",
         "src": "assets/videos/mastah_hybrid.mp4",
@@ -176,6 +182,13 @@ const ENTRY_LIBRARY = {
         "alt": "Preliminary MASTAH runtime in relation to scenario difficulty across hierarchy types and MILP FJSP formulation",
         "blurb": "Preliminary MASTAH runtime in relation to scenario difficulty across various hierarchy types and the MILP FJSP formulation."
       }
+    ],
+    "links": [
+      {
+        "label": "Watch presentation (26 min)",
+        "href": "https://youtu.be/NvRt0rdWVfA",
+        "type": "video"
+      }
     ]
   },
   // Task and Motion Planning for Special Structures on a Franka Panda
@@ -198,7 +211,7 @@ const ENTRY_LIBRARY = {
     "descriptions": [
       {
             "label": "Overview",
-            "text": "This system is a modular task-and-motion-planning pipeline for structure assembly tasks in the Genesis simulator using a Franka Emika Panda arm. "
+            "text": "This system is a modular task-and-motion-planning pipeline for structure assembly tasks in the Genesis simulator using a 7-DOF Franka Emika Panda arm."
       },
       {
             "label": "Technical Approach",
@@ -294,7 +307,7 @@ const ENTRY_LIBRARY = {
       },
       {
             "label": "Technical Approach",
-            "text": "LiDAR scans are used to detect nearby obstacles and construct point-cloud-based barrier constraints. Nav2 computes a nominal velocity command, and a CBF-QP solves for the closest safe command that preserves planner intent while enforcing minimum-distance requirements. Perception and control run through ROS 2, with filtered commands streamed back to the physical DeepRacer for execution."
+            "text": "LiDAR scans are used for SLAM and obstacle detection, constructing point-cloud-based barrier constraints. Nav2 computes a nominal velocity command, and a CBF-QP solves for the closest safe command that preserves planner intent while enforcing minimum-distance requirements. Perception and control computation run on a remote computer through ROS 2, with filtered velocity commands streamed back to the physical AWS DeepRacer for execution."
       },
       {
             "label": "Outcome",
@@ -362,7 +375,7 @@ const ENTRY_LIBRARY = {
     "id": "deepracer-belief",
     "type": "Project",
     "title": "ML Lane-Localization and Simulation Infrastructure for DeepRacer Experiments",
-    "summary": "Machine-learning lane-localization pipeline, synthetic dataset generator, and ROS 2/Isaac Sim control stack for testing belief-space safety controllers under state-dependent measurement noise.",
+    "summary": "End-to-end AWS DeepRacer perception and control testbed combining Blender-generated datasets, PyTorch lane localization, Dockerized ROS 2 control, Isaac Sim simulation, and physical hardware execution.",
     "topics": [
       "control",
       "simulation",
@@ -370,23 +383,23 @@ const ENTRY_LIBRARY = {
     ],
     "meta": {
       "Role": "Research apprentice / ML dataset, simulation, and controls infrastructure developer",
-      "Tools": "Blender, Isaac Sim, PyTorch, ROS 2, AWS DeepRacer",
+      "Tools": "Blender, Isaac Sim, PyTorch, ROS 2, Docker, AWS DeepRacer",
       "Timeline": "May 2025 – Aug 2025",
       "Team": "Automata Lab research apprenticeship",
-      "Status": "Follow-on research infrastructure"
+      "Status": "Simulation and hardware testbed"
     },
 "descriptions": [
   {
     "label": "Overview",
-    "text": "This project built a simulation and machine-learning pipeline for testing belief-space safety controllers on an AWS DeepRacer. It combines a model trained to predict lane position from dataset generated in Blender and simulation in Isaac Sim using ROS 2 to create a repeatable lane-keeping environment with controlled perception uncertainty."
+    "text": "Developed during an Automata Lab research apprenticeship, this testbed supported research on Belief Space Control of Safety-Critical Systems Under State-Dependent Measurement Noise. It combines a lane-localization model trained on Blender-generated camera images with Isaac Sim and ROS 2 to create a repeatable AWS DeepRacer lane-keeping environment with controlled perception uncertainty."
   },
   {
     "label": "Technical Approach",
-    "text": "A virtual scene was designed in Blender and to be exported and meshed in Isaac Sim. The scene was designed to match the physical lab environment that hardware tests would be performed in. A virtual rendering pipeline generated camera images across configurable lane positions and heading angles to train a model. The training distribution was intentionally biased toward center-lane poses, creating a perception model that performs best near the lane center and exhibits higher, but predictable, uncertainty near lane boundaries. A ROS2-Isaac Sim pipeline was implemented to render an image taken by a simulated AWS Deepracer in the virtual lab, generate a prediction from the lane model, feed the prediction into a controller, and then execute command velocities back on the Deepracer. This pipeline can also perform the same tasks on real hardware."
+    "text": "A Blender scene matching the physical lab environment was exported and meshed in Isaac Sim. A virtual rendering pipeline generated camera images across configurable lane offsets and heading angles to train the localization model. The training distribution was intentionally biased toward center-lane poses, creating a perception model that performs best near the lane center and exhibits higher, but predictable, uncertainty near lane boundaries. A Dockerized ROS 2 pipeline connected Isaac Sim camera images, PyTorch lane-position inference, and controller velocity commands. The same closed-loop pipeline ran against both simulated imagery and physical AWS DeepRacer hardware."
   },
   {
     "label": "Outcome",
-    "text": "The pipeline was used to test lane-localization and control on a physical AWS DeepRacer in the lab, while also producing simulation results in a matched Isaac Sim environment. These results establish a practical baseline for evaluating how perception uncertainty affects lane-keeping behavior and will support future work on belief-space safety controllers."
+    "text": "The testbed demonstrated lane-localization and closed-loop control on physical AWS DeepRacer hardware and in a matched Isaac Sim environment. Controlled camera-image datasets across lane offsets and heading angles supported evaluation of state-dependent perception error, providing a practical baseline for belief-space safety-control research."
   }
 ],
     "tags": [
@@ -468,7 +481,7 @@ const ENTRY_LIBRARY = {
 },
 {
   "label": "Outcome",
-  "text": "The pipeline was tested on simulated UR5 trajectories and loading cases, including motions with external end-effector forces. It can generate joint-space motion from Cartesian goals, animate the resulting robot movement, and compute torque profiles for evaluating whether a planned trajectory is physically reasonable. The project demonstrates a ground-up implementation of the mathematical foundation behind FK, IK, trajectory generation, and inverse dynamics, with visualization tools used only to display the resulting motion."
+  "text": "Validated on a simulated UR5 with a 2 kg end-effector load along a quintic trajectory between 10 desired configurations, the pipeline computed joint positions and torques for 3,000 interpolated poses in under 0.75 seconds. It connects Cartesian goals, joint-space motion, and torque profiles to evaluate whether a planned trajectory is physically reasonable, with external libraries used only for visualization."
 }
 ],
     "tags": [
@@ -530,11 +543,11 @@ const ENTRY_LIBRARY = {
       },
       {
             "label": "Technical Approach",
-            "text": "The simulator represents the quadrotor with 12 states for position, orientation, linear velocity, and angular velocity. Rotor thrust is applied through the body frame, and propeller torque effects are included in the control model. A linearized representation supports feedback design, while the simulation retains nonlinear coupling between thrust, attitude, moments, and translation."
+            "text": "The simulator represents the quadrotor with 12 states for position, orientation, linear velocity, and angular velocity. Rotor thrust is applied through the body frame, and propeller torque effects are included in the control model. A linearized representation supports LQR feedback design, while the simulation retains nonlinear coupling between thrust, attitude, moments, and translation."
       },
       {
             "label": "Outcome",
-            "text": "The controller consistently intercepted moving targets within 0.1 m at speeds up to 4.8 m/s while respecting the 3 N per-rotor thrust limit. The individual scenario videos show repeatability across different target motions and initial conditions. The project demonstrates feedback-control design, dynamic simulation, and performance validation for a constrained aerial pursuit task."
+            "text": "The controller consistently intercepted moving targets within 0.1 m at speeds up to 4.8 m/s inside a 10 x 10 x 10 m flight volume while respecting the 3 N per-rotor thrust limit. The individual scenario videos show repeatability across different target motions and initial conditions. The project demonstrates feedback-control design, dynamic simulation, and performance validation for a constrained aerial pursuit task."
       }
 ],
     "tags": [
@@ -580,7 +593,7 @@ window.ENTRY_LIBRARY = ENTRY_LIBRARY;
 window.PORTFOLIO_DATA = {
   "profile": {
     "name": "Benjamin Cruse",
-    "subtitle": "BS Robotics and Automation Engineering, WPI; MS expected August 2026",
+    "subtitle": "BS and MS in Robotics and Automation Engineering, WPI",
     "avatar": "assets/images/profile.jpg",
     "github": "https://github.com/TheBoopleBeep",
     "linkedin": "https://www.linkedin.com/in/benjamindcruse/",
@@ -589,9 +602,10 @@ window.PORTFOLIO_DATA = {
       "benjamindcruse@gmail.com"
     ],
     "phone": "409-789-0687",
-    "location": "Greater Boston, MA / WPI",
+    "location": "Greater Boston Area, MA",
+    "education": "Worcester Polytechnic Institute: BS in Robotics and Automation Engineering (May 2026); MS in Robotics and Automation Engineering (August 2026)",
     "resume": "assets/docs/Benjamin_Cruse_Resume.pdf",
-    "sidebarNote": "Robotics and Automation Engineering BS graduate completing an MS at WPI in August 2026. Focused on robotics software, autonomy, controls, motion planning, simulation, and research engineering.",
+    "sidebarNote": "Robotics and Automation Engineering BS and MS graduate from WPI, with the MS completed in August 2026. Focused on robotics software, autonomy, controls, motion planning, simulation, and research engineering.",
     "contactIntro": "If you have any questions about my work or would like to speak to me about any project or job positions, please reach out to me. I am currently based in the Greater Boston Area, but would be more than willing to relocate for the right opportunity. I will usually respond within two days, unless I am hiking in the middle of nowhere. I look forward to hearing from you!",
     "heroActions": [
       {
@@ -616,9 +630,12 @@ window.PORTFOLIO_DATA = {
   "skills": [
     "Robot Control",
     "MPC",
+    "LQR",
+    "PID",
     "CLFs/CBFs",
     "Dynamics",
     "Forward and Inverse Kinematics",
+    "RNEA",
     "SLAM",
     "MCL",
     "MDPs/POMDPs",
@@ -637,20 +654,36 @@ window.PORTFOLIO_DATA = {
     "PDDL",
     "OMPL",
     "Camera Calibration",
+    "Computer Vision",
+    "Data Processing",
+    "Dataset Curation",
     "Automatic Data Labeling",
     "OpenCV",
     "PyTorch",
     "CNNs",
+    "LSTMs",
     "Transformers",
+    "Seq2Seq Models",
+    "Model Training & Inference",
     "Blender",
+    "Onshape",
+    "Fusion 360",
     "Isaac Sim",
-    "RViz2",
+    "Genesis",
+    "RViz 2",
     "Gazebo",
+    "URDF/SDF",
+    "KiCad",
     "MATLAB",
     "Python",
     "C++",
+    "Java",
+    "Rust",
+    "Linux",
+    "Git",
     "ROS & ROS 2",
     "Docker",
+    "Docker Compose",
     "Sensor Fusion",
     "EKF/UKF",
     "Nav2",
@@ -680,7 +713,7 @@ window.PORTFOLIO_DATA = {
     }
   ],
   "about": {
-    "paragraph": "I am a Robotics and Automation Engineering BS graduate at WPI completing an MS in August 2026. My work focuses on the intersection of planning, controls, formal methods, simulation, and physical robot execution, including LTL-aware planning, control barrier functions, multi-agent task allocation, inverse dynamics, simulation pipelines, and hardware testing.",
+    "paragraph": "I hold a BS and an MS in Robotics and Automation Engineering from WPI, where I completed my MS in August 2026. My work focuses on the intersection of planning, controls, formal methods, simulation, and physical robot execution, including LTL-aware planning, control barrier functions, multi-agent task allocation, inverse dynamics, simulation pipelines, and hardware testing.",
     "items": [
       {
         "title": "Focus",
@@ -692,7 +725,7 @@ window.PORTFOLIO_DATA = {
       },
       {
         "title": "Tooling",
-        "text": "Python, MATLAB, C++, ROS 2, OMPL, PDDL, Nav2, PyTorch, Blender, Isaac Sim, Genesis, Docker, and Gazebo."
+        "text": "Python, C++, Rust, Java, MATLAB, ROS and ROS 2, PyTorch, OpenCV, OMPL, PDDL, Nav2, Blender, Isaac Sim, Genesis, Docker, Linux, and Git."
       }
     ]
   },
